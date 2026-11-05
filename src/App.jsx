@@ -342,8 +342,8 @@ const DEFAULT_WEDDING_CONFIG = {
     {
       id: 'bank-bri',
       bankName: 'Bank BRI',
-      accountNumber: '0083 0102 8491 532',
-      accountHolder: 'Rifqi Muflih Chaniago / Lismawati Fatimah',
+      accountNumber: '4505 0103 319 6531',
+      accountHolder: 'Rifqi Muflih Chaniago',
       role: 'Tanda Kasih Pernikahan',
     },
   ],
