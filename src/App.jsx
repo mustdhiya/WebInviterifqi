@@ -48,6 +48,45 @@ const INVITED_GUESTS = [
   'Keluarga Besar H. M. Yusuf',
   'Segenap Keluarga Besar (Padang) Sumatera Barat',
   'Keluarga Besar Bpk. Rahmat & Ibu Tajeriah',
+  'Ais & partner',
+  'Sarah & partner',
+  'Pute & partner',
+  'Tiwi & partner',
+  'Fina & partner',
+  'Alifia & partner',
+  'Sella & partner',
+  'Nayla & partner',
+  'Nisa & partner',
+  'Agni & Thorieq',
+  'Anggun & Partner',
+  'Awdilla & Partner',
+  'Tika & Partner',
+  'Titin & Partner',
+  'Muthia & Partner',
+  'Dela & Partner',
+  'Andi & Partner',
+  'Bibil & Partner',
+  'Wira & Partner',
+  'Ara & Partner',
+  'Adonk & partner',
+  'Lyna & partner',
+  'Widya & partner',
+  'Alya & partner',
+  'Diva & partner',
+  'Caca & partner',
+  'Said & partner',
+  'Jali & Partner',
+  'Rafi & Neltha',
+  'Hendri & Amel',
+  'Alya & Aji',
+  'Aish & partner',
+  'Radit & partner',
+  'Bhita & partner',
+  'Naypit & Partner',
+  'Zelda & Partner',
+  'Brutal Trailrun',
+  'Uno Jaesan',
+  '7icon',
 ];
 
 const createGuestSlug = (text = '') =>
@@ -128,7 +167,7 @@ const handleImageFallback = (e, fallbackSrc) => {
 };
 
 // ============================================================================
-// KONFIGURASI DATA PERNIKAHAN - LISMA & RIFQI
+// KONFIGURASI DATA PERNIKAHAN — LISMA & RIFQI
 // TEMA: "ROYAL MAROON, CHAMPAGNE GOLD & NAVY VELVET HERITAGE"
 // Berdasarkan Foto Prewedding & Desain Kartu Undangan Resmi (15 November 2026)
 // ============================================================================
@@ -249,7 +288,7 @@ const DEFAULT_WEDDING_CONFIG = {
       fallbackUrl: FALLBACK_COUPLE_PORTRAIT,
       type: 'portrait-main',
       objectPos: 'object-center',
-      caption: 'I. The Wedding of Lisma & Rifqi - 15 . 11 . 2026',
+      caption: 'I. The Wedding of Lisma & Rifqi — 15 . 11 . 2026',
       subtitle: 'Potret Utama Busana Adat Navy Velvet & Suntiang Perak dalam Balutan Tirai Maroon Klasik',
     },
     {
@@ -295,7 +334,7 @@ const DEFAULT_WEDDING_CONFIG = {
       type: 'closing-frame',
       objectPos: 'object-center',
       caption: 'VI. Menuju Ikatan Suci Abadi',
-      subtitle: 'Minggu, 15 November 2026 - Samarinda, Kalimantan Timur',
+      subtitle: 'Minggu, 15 November 2026 — Samarinda, Kalimantan Timur',
     },
   ],
   closingPhoto: '/galeri/7.jpeg',
@@ -303,8 +342,8 @@ const DEFAULT_WEDDING_CONFIG = {
     {
       id: 'bank-bri',
       bankName: 'Bank BRI',
-      accountNumber: '450501033196531',
-      accountHolder: 'Rifqi Muflih Chaniago',
+      accountNumber: '0083 0102 8491 532',
+      accountHolder: 'Rifqi Muflih Chaniago / Lismawati Fatimah',
       role: 'Tanda Kasih Pernikahan',
     },
   ],
@@ -313,16 +352,26 @@ const DEFAULT_WEDDING_CONFIG = {
     companyName: 'PT. MUSTDHIYA TEKNOLOGI INDONESIA',
   },
   music: {
-    title: 'Barakallah Lakuma - Islamic Wedding Instrumental Serenade',
+    title: 'Barakallah Lakuma — Islamic Wedding Instrumental Serenade',
     tracks: [
       {
         id: 'barakallah',
         name: 'Barakallah Lakuma (Islamic Wedding Chime)',
         subtitle: 'Nuansa Syahdu & Religius Pernikahan Islami',
       },
+      {
+        id: 'shalawat',
+        name: 'Shalawat Cinta & Mawaddah (Gambus Harp)',
+        subtitle: 'Melodi Klasik Penuh Ketenteraman Hati',
+      },
+      {
+        id: 'ar-rum',
+        name: 'Senandung Sakinah Ar-Rum 21 (Warm Celesta)',
+        subtitle: 'Harmoni Instrumental Akad & Resepsi',
+      },
     ],
-    audioUrl: '/Maher Zain - Baraka Allahu Lakuma Official Lyric Video ماهر زين - بارك الله لكما.mp3',
-    startTime: 14,
+    audioUrl: '/wedding-islamic-nasheed.mp3',
+    startTime: 0,
     endTime: 120,
     maxVolume: 0.65,
     fadeDuration: 2.5,
@@ -830,7 +879,7 @@ export default function App() {
 
   // Pasang public/logo.png pada tab browser (favicon) & title
   useEffect(() => {
-    document.title = 'The Wedding of Lisma & Rifqi - 15 November 2026';
+    document.title = 'The Wedding of Lisma & Rifqi — 15 November 2026';
     const setFavicon = (rel, href) => {
       let link = document.querySelector(`link[rel="${rel}"]`);
       if (!link) {
@@ -1086,10 +1135,33 @@ export default function App() {
     }
   };
 
-  const handleCopyGuestUrl = (guest) => {
-    const slug = createGuestSlug(guest);
+  const generateInvitationMessage = (guest) => {
     const url = `${window.location.origin}/?to=${encodeURIComponent(guest)}`;
-    copyTextSafe(url);
+    const groomTitle = config.couple.groomFull;
+    const brideTitle = config.couple.brideFull;
+    const coupleShort = config.couple.orderOnCard || `${config.couple.groomShort} & ${config.couple.brideShort}`;
+
+    return `Assalamu’alaikum Warahmatullahi Wabarakatuh
+
+Tanpa mengurangi rasa hormat, sehubungan dengan keterbatasan jarak dan waktu, melalui pesan ini kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu pada acara pernikahan kami:
+${groomTitle} & ${brideTitle}
+Informasi lengkap mengenai detail acara, lokasi, dan jam pelaksanaan dapat diakses melalui tautan undangan digital berikut:
+
+📍 ${url}
+
+Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.
+
+Terima kasih atas perhatian dan kerelaannya.
+Wassalamu’alaikum Warahmatullahi Wabarakatuh
+
+Kami yang berbahagia,
+${coupleShort}
+Beserta Keluarga Besar`;
+  };
+
+  const handleCopyGuestUrl = (guest) => {
+    const message = generateInvitationMessage(guest);
+    copyTextSafe(message);
     setCopiedGuestLink(guest);
     setTimeout(() => setCopiedGuestLink(null), 2200);
   };
@@ -1721,7 +1793,7 @@ export default function App() {
         }`}
       >
         {/* ===================================================================
-            SECTION 1 - HERO COVER (MEMADUKAN POTRET PREWEDDING & KUBAH MIHRAB)
+            SECTION 1 — HERO COVER (MEMADUKAN POTRET PREWEDDING & KUBAH MIHRAB)
         =================================================================== */}
         <header
           id="section-cover"
@@ -1836,7 +1908,7 @@ export default function App() {
         </header>
 
         {/* ===================================================================
-            SECTION 2 - AYAT SUCI AL-QUR'AN (QS. AR-RUM AYAT 21) & PEMBUKA
+            SECTION 2 — AYAT SUCI AL-QUR'AN (QS. AR-RUM AYAT 21) & PEMBUKA
             Sesuai Permintaan Mama di WhatsApp
         =================================================================== */}
         <section
@@ -1886,7 +1958,7 @@ export default function App() {
                   Artinya: {config.welcome.quote}
                 </blockquote>
                 <p className="font-sans-refined text-[9px] sm:text-[10px] uppercase tracking-[0.28em] text-[#E6C79C] mt-3 font-semibold">
-                  - (QS. Ar-Rum Ayat 21) -
+                  — (QS. Ar-Rum Ayat 21) —
                 </p>
               </div>
 
@@ -1898,7 +1970,7 @@ export default function App() {
         </section>
 
         {/* ===================================================================
-            SECTION 3 - PROFIL KEDUA MEMPELAI & COUNTDOWN HARI BAHAGIA
+            SECTION 3 — PROFIL KEDUA MEMPELAI & COUNTDOWN HARI BAHAGIA
             Menampilkan Nama, Gelar, dan Orang Tua Sesuai Kartu Undangan Resmi
         =================================================================== */}
         <section
@@ -1996,7 +2068,7 @@ export default function App() {
         </section>
 
         {/* ===================================================================
-            SECTION 4 - WAKTU & LOKASI ACARA (AKAD 08.00 & RESEPSI 11.00)
+            SECTION 4 — WAKTU & LOKASI ACARA (AKAD 08.00 & RESEPSI 11.00)
             Dilengkapi Tata Letak Persis Kartu Undangan + Salin Alamat Lengkap RT. 35 No. 69
         =================================================================== */}
         <section
@@ -2132,7 +2204,7 @@ export default function App() {
         </section>
 
         {/* ===================================================================
-            SECTION 5 - GALERI POTRET KEBAHAGIAAN & UNDANGAN RESMI
+            SECTION 5 — GALERI POTRET KEBAHAGIAAN & UNDANGAN RESMI
             Menggantikan section Turut Mengundang menjadi Galeri Editorial Penuh
         =================================================================== */}
         <section
@@ -2242,7 +2314,7 @@ export default function App() {
         </section>
 
         {/* ===================================================================
-            SECTION 7 - KONFIRMASI KEHADIRAN (RSVP), DOA RESTU & TANDA KASIH
+            SECTION 7 — KONFIRMASI KEHADIRAN (RSVP), DOA RESTU & TANDA KASIH
         =================================================================== */}
         <section
           id="section-rsvp"
@@ -2403,7 +2475,7 @@ export default function App() {
               </div>
             </RevealOnScroll>
 
-            {/* TANDA KASIH PERNIKAHAN - TRANSFER BANK BRI */}
+            {/* TANDA KASIH PERNIKAHAN — TRANSFER BANK BRI */}
             <RevealOnScroll className="mt-14 sm:mt-16 pt-10 border-t border-[#E6C79C]/35 text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#24040B] border border-[#E6C79C]/60 mb-3">
                 <Gift className="w-5 h-5 text-[#E6C79C]" />
@@ -2472,7 +2544,7 @@ export default function App() {
         </section>
 
         {/* ===================================================================
-            SECTION 8 - PENUTUP (CLOSING)
+            SECTION 8 — PENUTUP (CLOSING)
         =================================================================== */}
         <footer
           id="section-closing"
@@ -2695,15 +2767,25 @@ export default function App() {
                 htmlFor="custom-guest-input"
                 className="block font-sans-refined text-[8px] uppercase tracking-[0.22em] text-[#E6C79C] mb-1.5"
               >
-                Uji Tampilan Nama Tamu Secara Langsung:
+                Uji Tampilan &amp; Salin Pesan Tamu Custom:
               </label>
-              <input
-                id="custom-guest-input"
-                type="text"
-                value={guestName}
-                onChange={(e) => setGuestName(e.target.value)}
-                className="w-full bg-[#24040B] border border-[#E6C79C]/50 px-3 py-2 font-serif-luxury text-sm text-[#FFF8F0]"
-              />
+              <div className="flex gap-2">
+                <input
+                  id="custom-guest-input"
+                  type="text"
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                  placeholder="Ketik nama tamu..."
+                  className="flex-1 bg-[#24040B] border border-[#E6C79C]/50 px-3 py-2 font-serif-luxury text-sm text-[#FFF8F0]"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleCopyGuestUrl(guestName)}
+                  className="px-3 py-2 bg-[#E6C79C] text-[#2A050D] font-sans-refined text-[8px] font-semibold uppercase tracking-wider shrink-0 hover:bg-[#FFF8F0] transition-colors"
+                >
+                  {copiedGuestLink === guestName ? 'Pesan Tersalin!' : 'Salin Pesan'}
+                </button>
+              </div>
             </div>
 
             <div className="space-y-2.5">
@@ -2735,9 +2817,9 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => handleCopyGuestUrl(guest)}
-                      className="px-2.5 py-1.5 bg-[#E6C79C] text-[#2A050D] font-sans-refined text-[8px] font-semibold uppercase tracking-wider"
+                      className="px-2.5 py-1.5 bg-[#E6C79C] text-[#2A050D] font-sans-refined text-[8px] font-semibold uppercase tracking-wider hover:bg-[#FFF8F0] transition-colors"
                     >
-                      {copiedGuestLink === guest ? 'Tersalin' : 'Salin Link'}
+                      {copiedGuestLink === guest ? 'Pesan Tersalin!' : 'Salin Pesan'}
                     </button>
                   </div>
                 </div>
