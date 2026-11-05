@@ -48,6 +48,45 @@ const INVITED_GUESTS = [
   'Keluarga Besar H. M. Yusuf',
   'Segenap Keluarga Besar (Padang) Sumatera Barat',
   'Keluarga Besar Bpk. Rahmat & Ibu Tajeriah',
+  'Ais & partner',
+  'Sarah & partner',
+  'Pute & partner',
+  'Tiwi & partner',
+  'Fina & partner',
+  'Alifia & partner',
+  'Sella & partner',
+  'Nayla & partner',
+  'Nisa & partner',
+  'Agni & Thorieq',
+  'Anggun & Partner',
+  'Awdilla & Partner',
+  'Tika & Partner',
+  'Titin & Partner',
+  'Muthia & Partner',
+  'Dela & Partner',
+  'Andi & Partner',
+  'Bibil & Partner',
+  'Wira & Partner',
+  'Ara & Partner',
+  'Adonk & partner',
+  'Lyna & partner',
+  'Widya & partner',
+  'Alya & partner',
+  'Diva & partner',
+  'Caca & partner',
+  'Said & partner',
+  'Jali & Partner',
+  'Rafi & Neltha',
+  'Hendri & Amel',
+  'Alya & Aji',
+  'Aish & partner',
+  'Radit & partner',
+  'Bhita & partner',
+  'Naypit & Partner',
+  'Zelda & Partner',
+  'Brutal Trailrun',
+  'Uno Jaesan',
+  '7icon',
 ];
 
 const createGuestSlug = (text = '') =>
@@ -313,7 +352,13 @@ const DEFAULT_WEDDING_CONFIG = {
     companyName: 'PT. MUSTDHIYA TEKNOLOGI INDONESIA',
   },
   music: {
-    title: 'Barakallah Lakuma — Islamic Wedding Instrumental Serenade',
+    title: 'The Script - Never Seen Anything Quite Like You',
+    audioUrl: '/The Script - Never Seen Anything Quite Like You (Audio).mp3',
+    fallbackAudioUrl: '/Maher Zain - Baraka Allahu Lakuma Official Lyric Video ماهر زين - بارك الله لكما.mp3',
+    startTime: 14, // Dipercepat 5 detik: langsung masuk ke lagu tanpa menunggu intro melodi/piano 5 detik pertama
+    endTime: 166,
+    maxVolume: 0.7,
+    fadeDuration: 1.5,
     tracks: [
       {
         id: 'barakallah',
@@ -321,11 +366,6 @@ const DEFAULT_WEDDING_CONFIG = {
         subtitle: 'Nuansa Syahdu & Religius Pernikahan Islami',
       },
     ],
-    audioUrl: '/Maher Zain - Baraka Allahu Lakuma Official Lyric Video ماهر زين - بارك الله لكما.mp3',
-    startTime: 18,
-    endTime: 120,
-    maxVolume: 0.65,
-    fadeDuration: 2.5,
   },
 };
 
@@ -979,6 +1019,41 @@ export default function App() {
     };
   }, []);
 
+  // Smooth Looping dari startTime (detik ke-5) ke endTime (detik ke-66) tanpa intro melodi/piano
+  useEffect(() => {
+    const audio = htmlAudioRef.current;
+    if (!audio || !config.music.audioUrl) return;
+
+    const start = config.music.startTime ?? 5;
+    const end = config.music.endTime ?? 66;
+    const maxVol = config.music.maxVolume ?? 0.7;
+    const fade = config.music.fadeDuration ?? 1.5;
+
+    const handleTimeUpdate = () => {
+      const current = audio.currentTime;
+
+      if (current >= end || current < start) {
+        audio.currentTime = start;
+        audio.volume = maxVol;
+        audio.play().catch(() => {});
+        return;
+      }
+
+      if (current - start <= fade) {
+        const progress = Math.max(0, (current - start) / fade);
+        audio.volume = Math.min(maxVol, progress * maxVol);
+      } else if (end - current <= fade) {
+        const progress = Math.max(0, (end - current) / fade);
+        audio.volume = Math.min(maxVol, progress * maxVol);
+      } else {
+        audio.volume = maxVol;
+      }
+    };
+
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
+  }, [config.music]);
+
   useEffect(() => {
     if (!isAuthorizedGuest) {
       document.body.style.overflow = '';
@@ -991,26 +1066,36 @@ export default function App() {
   }, [envelopeStage, isAuthorizedGuest]);
 
   const startMusicPlayback = () => {
-    if (synthRef.current) {
+    const audio = htmlAudioRef.current;
+    if (config.music.audioUrl && audio) {
+      const start = config.music.startTime ?? 5;
+      const end = config.music.endTime ?? 66;
+
+      // Langsung lompat 5 detik ke depan (melewati intro melodi/piano)
+      if (audio.currentTime < start || audio.currentTime >= end) {
+        audio.currentTime = start;
+      }
+      audio.volume = config.music.maxVolume ?? 0.7;
+      audio.play().catch(() => {
+        // Fallback jika file MP3 lokal belum terpasang di public/
+        if (synthRef.current) {
+          synthRef.current.setTrack(selectedTrack);
+          synthRef.current.start();
+        }
+      });
+    } else if (synthRef.current) {
       synthRef.current.setTrack(selectedTrack);
       synthRef.current.start();
-    }
-    if (config.music.audioUrl && htmlAudioRef.current) {
-      const audio = htmlAudioRef.current;
-      audio.volume = 0.5;
-      audio.play().catch(() => {
-        // Jika file MP3 lokal tidak ditemukan, synthesizer religius tetap berjalan
-      });
     }
     setIsPlayingMusic(true);
   };
 
   const stopMusicPlayback = () => {
-    if (synthRef.current) {
-      synthRef.current.stop();
-    }
     if (htmlAudioRef.current) {
       htmlAudioRef.current.pause();
+    }
+    if (synthRef.current) {
+      synthRef.current.stop();
     }
     setIsPlayingMusic(false);
   };
@@ -1043,11 +1128,12 @@ export default function App() {
       startMusicPlayback();
     }
 
+    // Durasi animasi buka amplop dipersingkat menjadi 1.2 detik agar responsif dan tidak lama
     setTimeout(() => {
       setEnvelopeStage('opened');
       setIsInvitationOpened(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 2100);
+    }, 1200);
   };
 
   const handleReplayEnvelope = () => {
@@ -1066,7 +1152,7 @@ export default function App() {
       if (mainContentRef.current) {
         mainContentRef.current.scrollIntoView({ behavior: 'smooth' });
       }
-    }, 500);
+    }, 300);
   };
 
   const copyTextSafe = (text) => {
@@ -1095,7 +1181,9 @@ export default function App() {
     return `Assalamu’alaikum Warahmatullahi Wabarakatuh
 
 Tanpa mengurangi rasa hormat, sehubungan dengan keterbatasan jarak dan waktu, melalui pesan ini kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu pada acara pernikahan kami:
+
 ${groomTitle} & ${brideTitle}
+
 Informasi lengkap mengenai detail acara, lokasi, dan jam pelaksanaan dapat diakses melalui tautan undangan digital berikut:
 
 📍 ${url}
@@ -1103,7 +1191,9 @@ Informasi lengkap mengenai detail acara, lokasi, dan jam pelaksanaan dapat diaks
 Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.
 
 Terima kasih atas perhatian dan kerelaannya.
+
 Wassalamu’alaikum Warahmatullahi Wabarakatuh
+
 
 Kami yang berbahagia,
 ${coupleShort}
@@ -1266,7 +1356,25 @@ Beserta Keluarga Besar`;
   return (
     <div className="min-h-screen bg-[#1E040A] text-[#2A050D] selection:bg-[#4A0E1C] selection:text-[#F5E6D3] antialiased overflow-x-hidden pb-24 sm:pb-0">
       {config.music.audioUrl && (
-        <audio ref={htmlAudioRef} src={config.music.audioUrl} loop preload="none" />
+        <audio
+          ref={htmlAudioRef}
+          src={config.music.audioUrl}
+          loop
+          preload="auto"
+          onLoadedMetadata={() => {
+            if (htmlAudioRef.current) {
+              htmlAudioRef.current.currentTime = config.music.startTime ?? 5;
+            }
+          }}
+          onError={(e) => {
+            const audio = e.currentTarget;
+            if (config.music.fallbackAudioUrl && audio.src !== config.music.fallbackAudioUrl && !audio.dataset.triedFallback) {
+              audio.dataset.triedFallback = '1';
+              audio.src = config.music.fallbackAudioUrl;
+              audio.load();
+            }
+          }}
+        />
       )}
 
       <style>{`
